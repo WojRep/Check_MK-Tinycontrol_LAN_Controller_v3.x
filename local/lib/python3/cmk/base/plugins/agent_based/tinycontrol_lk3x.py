@@ -36,6 +36,9 @@ from .utils.temperature import _render_temp_with_unit
 from cmk.utils import debug
 from pprint import pprint
 
+import sqlite3
+
+
 SNMP_DETECT = ".1.3.6.1.4.1.7616"
 SNMP_BASE = ".1.3.6.1.4.1.7616"
 OIDs = [
@@ -111,19 +114,27 @@ OIDs = [
         ["6.30", "m30", "Modbus 30", False, None],
 ]
 
-OIDs_DICT = { OIDs[n][1]: { 'oid': OIDs[n][0], 'name': OIDs[n][2], 'do_metric': OIDs[n][3],} for n in range(len(OIDs)) }
+OIDs_DICT = { OIDs[n][1]: { 'oid': OIDs[n][0], 'name': OIDs[n][2], 'do_metric': OIDs[n][3], 'unit': OIDs[n][4]} for n in range(len(OIDs)) }
 
-TEMP_UNIT = {
+UNIT = {
     "c": u"°C",
     "f": u"°F",
     "k": u"K",
+    'v': u"V",
+    'a': u"A",
+    'w': u"W",
+    'hz': u"Hz",
 }
 
-RENDER = {
-    '%'  : render.percent,
-    'Hz' : render.frequency,
-    'c'  : lambda temp: _render_temp_with_unit(temp, output_unit)
-}
+
+
+def _render_template(value: float):
+    template = "%%%s" % ("d" if isinstance(value, int) else ".1f")
+    return template % value    
+
+
+def _render_func(value: float, unit: str) -> str:
+    return _render_template(value) + UNIT[unit]
 
 
 def snmp_oids():
@@ -146,7 +157,7 @@ def _isInt(s):
         return False
 
 
-def parse_tinycontroll_lk3x(string_table):
+def parse_tinycontrol_lk3x(string_table):
     new_item={}
     parameters = string_table[0]
     for n in range(len(parameters)):
@@ -162,12 +173,12 @@ def parse_tinycontroll_lk3x(string_table):
     return new_item
 
 
-def discover_tinycontroll_lk3x(section) -> DiscoveryResult:
+def discover_tinycontrol_lk3x(section) -> DiscoveryResult:
     for new_item in section.keys():
         yield Service(item=new_item)
 
 
-def check_tinycontroll_lk3x(item, params, section) -> CheckResult:
+def check_tinycontrol_lk3x(item, params, section) -> CheckResult:
 #    pprint("### CHECK ###")
 #    pprint(item)
 #    pprint(params)
@@ -193,15 +204,29 @@ def check_tinycontroll_lk3x(item, params, section) -> CheckResult:
             # Multipliter
             multiplier = params.get('multiplier') if (params.get('multiplier') and params.get('multiplier') != 0) else 1
             # Unit
-            unit = params.get('unit') if params.get('unit') else '' 
+            unit = params.get('unit') if params.get('unit') else parameters['unit']
 
         if do_metric:
+#            pprint("# - Metric - #")
+#            pprint(parameter_name)
+#            pprint(unit)
+#            pprint(_render_func(parameter_data, unit))
+#            pprint("X")
+#            pprint(_render_temp_with_unit(parameter_data, unit))
+#            pprint("XXX")
+#            output_unit = unit
+            tmp_render = {
+            'c': lambda parameter_data: _render_temp_with_unit(parameter_data, unit),
+            'v': lambda parameter_data: _render_func(parameter_data, unit),
+            }
             yield from check_levels(
 			    value=(parameter_data * multiplier), 
+			    metric_name = item,
 			    label = parameter_name,
 			    levels_upper = (high_warn, high_crit), 
 			    levels_lower = (low_warn, low_crit), 
-			    render_func = RENDER.get(unit),
+#			    render_func = tmp_render[unit],
+			    render_func = lambda parameter_data: _render_func(parameter_data, unit),
 			)
         else:
             summary = f'{parameter_name}: {parameter_data}'
@@ -213,18 +238,18 @@ def check_tinycontroll_lk3x(item, params, section) -> CheckResult:
 
 
 register.snmp_section(
-    name="tinycontroll_lk3x",
+    name="tinycontrol_lk3x",
     fetch=SNMPTree(base=SNMP_BASE, oids=snmp_oids()),
     detect = startswith(".1.3.6.1.2.1.1.2.0", SNMP_DETECT),
-    parse_function = parse_tinycontroll_lk3x,
+    parse_function = parse_tinycontrol_lk3x,
 )
 
 register.check_plugin(
-    name="tinycontroll_lk3x",
-    sections=["tinycontroll_lk3x"],
-    service_name = "TinyControll %s",
+    name="tinycontrol_lk3x",
+    sections=["tinycontrol_lk3x"],
+    service_name = "TinyControl %s",
     check_default_parameters={},
-    discovery_function = discover_tinycontroll_lk3x,
-    check_function = check_tinycontroll_lk3x,
-    check_ruleset_name="tinycontroll_lk3x",
+    discovery_function = discover_tinycontrol_lk3x,
+    check_function = check_tinycontrol_lk3x,
+    check_ruleset_name="tinycontrol_lk3x",
 )
