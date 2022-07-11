@@ -42,79 +42,80 @@ import sqlite3
 SNMP_DETECT = ".1.3.6.1.4.1.7616"
 SNMP_BASE = ".1.3.6.1.4.1.7616"
 OIDs = [
-#	["oid","param_name","param description", do_Matric, unit],
-	["2.1", "inpd1", "Digital Input 1", False, None],
-	["2.2", "inpd2", "Digital Input 2", False, None],
-	["2.3", "inpd3", "Digital Input 3", False, None],
-	["2.4", "inpd4", "Digital Input 4", False, None],
-	["3.1", "inpa1", "Analog Input 1", False, None],
-	["3.2", "inpa2", "Analog Input 2", False, None],
-	["3.3", "inpa3", "Analog Input 3", False, None],
-	["3.4", "inpa4", "Analog Input 4", False, None],
-	["3.5", "inpa5", "Analog Input 5", False, None],
-	["3.6", "inpa6", "Analog Input 6", False, None],
-	["3.7", "vcc", "Voltage", True, 'v'],
-	["3.8", "temp", "Temperature", True, 'c'],
-	["4.1", "ds1", "DS 1", False, 'c'],
-	["4.2", "ds1", "DS 2", False, 'c'],
-	["4.3", "ds1", "DS 3", False, 'c'],
-	["4.4", "ds1", "DS 4", False, 'c'],
-	["4.5", "ds1", "DS 5", False, 'c'],
-	["4.6", "ds1", "DS 6", False, 'c'],
-	["4.7", "ds1", "DS 7", False, 'c'],
-	["4.8", "ds1", "DS 8", False, 'c'],
-	["4.9", "t1", "T1", False, None],
-	["4.10","h1", "H1", False, None],
-	["4.11","diff1", "Diff 1", False, None],
-	["4.12","diff2", "Diff 2", False, None],
-	["4.13","diff3", "Diff 3", False, None],
-	["4.14","p1", "P1", False, None],
-	["4.15","co2", "CO2", False, None],
-	["4.16","pm1", "PM 1", False, None],
-	["4.17","pm2", "PM 2", False, None],
-	["4.18","pm4", "PM 4", False, None],
-	["4.19","pm10", "PM 10", False, None],
-	["5.1", "power1", "Power 1", False, None],
-	["5.2", "power2", "Power 2", False, None],
-	["5.3", "power3", "Power 3", False, None],
-	["5.4", "power4", "Power 4", False, None],
-	["5.5", "energy1", "Energy 1", False, None],
-	["5.6", "energy2", "Energy 2", False, None],
-	["5.7", "energy3", "Energy 3", False, None],
-	["5.8", "energy4", "Energy 4", False, None],
-	["6.1", "m1", "Modbus 1", False, None],
-	["6.2", "m2", "Modbus 2", False, None],
-	["6.3", "m3", "Modbus 3", False, None],
-	["6.4", "m4", "Modbus 4", False, None],
-	["6.5", "m5", "Modbus 5", False, None],
-	["6.6", "m6", "Modbus 6", False, None],
-	["6.7", "m7", "Modbus 7", False, None],
-	["6.8", "m8", "Modbus 8", False, None],
-	["6.9", "m9", "Modbus 9", False, None],
-        ["6.10", "m10", "Modbus 10", False, None],
-        ["6.11", "m11", "Modbus 11", False, None],
-        ["6.12", "m12", "Modbus 12", False, None],
-        ["6.13", "m13", "Modbus 13", False, None],
-        ["6.14", "m14", "Modbus 14", False, None],
-        ["6.15", "m15", "Modbus 15", False, None],
-        ["6.16", "m16", "Modbus 16", False, None],
-        ["6.17", "m17", "Modbus 17", False, None],
-        ["6.18", "m18", "Modbus 18", False, None],
-        ["6.19", "m19", "Modbus 19", False, None],
-        ["6.20", "m20", "Modbus 20", False, None],
-        ["6.21", "m21", "Modbus 21", False, None],
-        ["6.22", "m22", "Modbus 22", False, None],
-        ["6.23", "m23", "Modbus 23", False, None],
-        ["6.24", "m24", "Modbus 24", False, None],
-        ["6.25", "m25", "Modbus 25", False, None],
-        ["6.26", "m26", "Modbus 26", False, None],
-        ["6.27", "m27", "Modbus 27", False, None],
-        ["6.28", "m28", "Modbus 28", False, None],
-        ["6.29", "m29", "Modbus 29", False, None],
-        ["6.30", "m30", "Modbus 30", False, None],
+#	["oid","param_name","param description", do_Matric, factory unit, factory_divider],
+	["2.1", "inpd1", "Digital Input 1", 'no', '',1],
+	["2.2", "inpd2", "Digital Input 2", 'no', '',1],
+	["2.3", "inpd3", "Digital Input 3", 'no', '',1],
+	["2.4", "inpd4", "Digital Input 4", 'no', '',1],
+	["3.1", "inpa1", "Analog Input 1", 'no', 'v',100],
+	["3.2", "inpa2", "Analog Input 2", 'no', 'v',100],
+	["3.3", "inpa3", "Analog Input 3", 'no', 'v',100],
+	["3.4", "inpa4", "Analog Input 4", 'no', 'v',100],
+	["3.5", "inpa5", "Analog Input 5", 'no', 'v',100],
+	["3.6", "inpa6", "Analog Input 6", 'no', 'v',100],
+	["3.7", "vcc", "Voltage", 'yes', 'v',100],
+	["3.8", "temp", "Temperature", 'yes', 'c',100],
+	["4.1", "ds1", "DS 1", 'no', 'c',10],
+	["4.2", "ds2", "DS 2", 'no', 'c',10],
+	["4.3", "ds3", "DS 3", 'no', 'c',10],
+	["4.4", "ds4", "DS 4", 'no', 'c',10],
+	["4.5", "ds5", "DS 5", 'no', 'c',10],
+	["4.6", "ds6", "DS 6", 'no', 'c',10],
+	["4.7", "ds7", "DS 7", 'no', 'c',10],
+	["4.8", "ds8", "DS 8", 'no', 'c',10],
+	["4.9", "t1", "T1", 'no', 'c',10],
+	["4.10","h1", "H1", 'no', '%',10],
+	["4.11","diff1", "Diff 1", 'no', '',1],
+	["4.12","diff2", "Diff 2", 'no', '',1],
+	["4.13","diff3", "Diff 3", 'no', '',1],
+	["4.14","p1", "P1", 'no', 'pa',1],
+	["4.15","co2", "CO2", 'no', 'ppm',1],
+	["4.16","pm1", "PM 1", 'no', 'ug/m3',1],
+	["4.17","pm2", "PM 2", 'no', 'ug/m3',1],
+	["4.18","pm4", "PM 4", 'no', 'ug/m3',1],
+	["4.19","pm10", "PM 10", 'no', 'ug/m3',1],
+	["5.1", "power1", "Power 1", 'no', 'w',1],
+	["5.2", "power2", "Power 2", 'no', 'w',1],
+	["5.3", "power3", "Power 3", 'no', 'w',1],
+	["5.4", "power4", "Power 4", 'no', 'w',1],
+	["5.5", "energy1", "Energy 1", 'no', 'wh',1],
+	["5.6", "energy2", "Energy 2", 'no', 'wh',1],
+	["5.7", "energy3", "Energy 3", 'no', 'wh',1],
+	["5.8", "energy4", "Energy 4", 'no', 'wh',1],
+	["6.1", "m1", "Modbus 1", 'no', '',1],
+	["6.2", "m2", "Modbus 2", 'no', '',1],
+	["6.3", "m3", "Modbus 3", 'no', '',1],
+	["6.4", "m4", "Modbus 4", 'no', '',1],
+	["6.5", "m5", "Modbus 5", 'no', '',1],
+	["6.6", "m6", "Modbus 6", 'no', '',1],
+	["6.7", "m7", "Modbus 7", 'no', '',1],
+	["6.8", "m8", "Modbus 8", 'no', '',1],
+	["6.9", "m9", "Modbus 9", 'no', '',1],
+        ["6.10", "m10", "Modbus 10", 'no', '',1],
+        ["6.11", "m11", "Modbus 11", 'no', '',1],
+        ["6.12", "m12", "Modbus 12", 'no', '',1],
+        ["6.13", "m13", "Modbus 13", 'no', '',1],
+        ["6.14", "m14", "Modbus 14", 'no', '',1],
+        ["6.15", "m15", "Modbus 15", 'no', '',1],
+        ["6.16", "m16", "Modbus 16", 'no', '',1],
+        ["6.17", "m17", "Modbus 17", 'no', '',1],
+        ["6.18", "m18", "Modbus 18", 'no', '',1],
+        ["6.19", "m19", "Modbus 19", 'no', '',1],
+        ["6.20", "m20", "Modbus 20", 'no', '',1],
+        ["6.21", "m21", "Modbus 21", 'no', '',1],
+        ["6.22", "m22", "Modbus 22", 'no', '',1],
+        ["6.23", "m23", "Modbus 23", 'no', '',1],
+        ["6.24", "m24", "Modbus 24", 'no', '',1],
+        ["6.25", "m25", "Modbus 25", 'no', '',1],
+        ["6.26", "m26", "Modbus 26", 'no', '',1],
+        ["6.27", "m27", "Modbus 27", 'no', '',1],
+        ["6.28", "m28", "Modbus 28", 'no', '',1],
+        ["6.29", "m29", "Modbus 29", 'no', '',1],
+        ["6.30", "m30", "Modbus 30", 'no', '',1],
+
 ]
 
-OIDs_DICT = { OIDs[n][1]: { 'oid': OIDs[n][0], 'name': OIDs[n][2], 'do_metric': OIDs[n][3], 'unit': OIDs[n][4]} for n in range(len(OIDs)) }
+OIDs_DICT = { OIDs[n][1]: { 'oid': OIDs[n][0], 'name': OIDs[n][2], 'do_metric': OIDs[n][3], 'unit': OIDs[n][4], 'factory_divider': OIDs[n][5]} for n in range(len(OIDs)) }
 
 UNIT = {
     "c": u"°C",
@@ -123,7 +124,11 @@ UNIT = {
     'v': u"V",
     'a': u"A",
     'w': u"W",
+    'wh': u"Wh",
     'hz': u"Hz",
+    'pa': u"Pa",
+    '%': u"%",
+    'ug/m3': u"µg/㎥",
 }
 
 
@@ -134,7 +139,7 @@ def _render_template(value: float):
 
 
 def _render_func(value: float, unit: str) -> str:
-    return _render_template(value) + UNIT[unit]
+    return _render_template(value) + UNIT.get(unit) if UNIT.get(unit) else ''
 
 
 def snmp_oids():
@@ -179,10 +184,6 @@ def discover_tinycontrol_lk3x(section) -> DiscoveryResult:
 
 
 def check_tinycontrol_lk3x(item, params, section) -> CheckResult:
-#    pprint("### CHECK ###")
-#    pprint(item)
-#    pprint(params)
-#    pprint(section)
 
     if not section:
         yield Result(state=State.UNKNOWN, summary="No data")
@@ -190,46 +191,36 @@ def check_tinycontrol_lk3x(item, params, section) -> CheckResult:
 
     if item in section:
         parameters = OIDs_DICT[item]
-        parameter_name = parameters['name']
+        # Default parameters form sensor definition
+        sensor_default_params = ( parameters['name'], (parameters['unit'], 1, 1), parameters['do_metric'], (None, None), (None, None))
+        # get parameters form Check_MK rules
+        sensor_params = params.get(item) if params.get(item) else sensor_default_params
+#        pprint(sensor_params)
+
+        parameter_name, parameter_unit, do_metric, lower_levels, upper_levels = sensor_params
+#        pprint(parameter_unit)
+#        pprint(parameters['unit'])
+        unit = parameter_unit[0]  if parameter_unit[0] is not None  else parameters['unit']
+#        pprint(unit)
+        multiplier = parameter_unit[1]  if parameter_unit[1] != 0 and parameter_unit[1] is not None else 1
+        divider = parameter_unit[2]  if parameter_unit[2] != 0 and parameter_unit[2] is not None else 1
+        factory_divider = parameters['factory_divider'] if parameters.get('factory_divider') != 0 and parameters.get('factory_divider') is not None  else 1
         parameter_data = section[item]
-        do_metric = parameters['do_metric']
-
-        # get parameters levels
-        for value_name, value_data in parameters.items():
-            # Levels
-            low_warn, low_crit = params.get('levels_lower') if params.get('levels_lower') else (None, None)
-            high_warn, high_crit = params.get('levels_upper') if params.get('levels_upper') else (None, None)
-            # Boundaries
-            boundaries_low,boundaries_high = params.get('boundaries') if params.get('boundaries') else (None, None)
-            # Multipliter
-            multiplier = params.get('multiplier') if (params.get('multiplier') and params.get('multiplier') != 0) else 1
-            # Unit
-            unit = params.get('unit') if params.get('unit') else parameters['unit']
-
-        if do_metric:
-#            pprint("# - Metric - #")
-#            pprint(parameter_name)
-#            pprint(unit)
-#            pprint(_render_func(parameter_data, unit))
-#            pprint("X")
-#            pprint(_render_temp_with_unit(parameter_data, unit))
-#            pprint("XXX")
-#            output_unit = unit
-            tmp_render = {
-            'c': lambda parameter_data: _render_temp_with_unit(parameter_data, unit),
-            'v': lambda parameter_data: _render_func(parameter_data, unit),
-            }
+#        pprint(f"{item}: {parameter_data}")
+        parameter_data = (parameter_data/factory_divider * multiplier) / divider
+#        pprint(f"{item}: {parameter_data} {unit}")
+        if do_metric == 'yes':
             yield from check_levels(
-			    value=(parameter_data * multiplier), 
+			    value=(parameter_data), 
 			    metric_name = item,
 			    label = parameter_name,
-			    levels_upper = (high_warn, high_crit), 
-			    levels_lower = (low_warn, low_crit), 
-#			    render_func = tmp_render[unit],
+			    levels_upper = upper_levels, 
+			    levels_lower = lower_levels, 
 			    render_func = lambda parameter_data: _render_func(parameter_data, unit),
 			)
         else:
-            summary = f'{parameter_name}: {parameter_data}'
+            unit = UNIT.get(unit) if UNIT.get(unit) else unit
+            summary = f'{parameter_name}: {parameter_data}{unit}'
             yield Result(state=State.OK, summary=summary)
     else:
         yield Result(state=State.UNKNOWN, summary="Sensor was not found")
